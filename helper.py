@@ -12,7 +12,7 @@ def downloading_files(years_for_download, URL, output_directory):
     os.makedirs(output_directory, exist_ok=True)
 
     for year in years_for_download:
-        print("\nDownloading the data of the year: " + str(year) + "\n")
+        print("\nBaixando arquivos: " + str(year) + "\n")
         url_for_download = (URL + str(year) + ".csv")
         output_filename = f"Mortalidade Geral {str(year)}.csv"
         output_filepath = os.path.join(output_directory, output_filename)
@@ -28,26 +28,26 @@ def downloading_files(years_for_download, URL, output_directory):
                 print(f"Error {request.status_code}")
 
 
-def plot_race_proportion(ax, df, coluna, categoria, cor):
+def plot_proportion_per_years(ax, df, column, category, color):
     df['data_obito'] = pd.to_datetime(df['data_obito'])
     
     # Obtendo uma ordem consistente para as raças
-    race_order = df.groupby(coluna).size().sort_values(ascending=False).index
+    column_order = df.groupby(column).size().sort_values(ascending=False).index
     
     # Mapeamento de cores para raças
-    race_colors = {race: col for race, col in zip(race_order, plt.cm.tab10.colors)}
+    race_colors = {race: col for race, col in zip(column_order, plt.cm.tab10.colors)}
     
     # Calculando a proporção de óbitos por raça ao longo dos anos
-    df_grouped = df.groupby([df['data_obito'].dt.year, coluna]).size().unstack().div(df.groupby(df['data_obito'].dt.year).size(), axis=0)
+    df_grouped = df.groupby([df['data_obito'].dt.year, column]).size().unstack().div(df.groupby(df['data_obito'].dt.year).size(), axis=0)
     
     # Criando o gráfico de linha
-    for race in race_order:
-        ax.plot(df_grouped.index, df_grouped[race], marker='o', color=race_colors[race], label=race)
+    for col in column_order:
+        ax.plot(df_grouped.index, df_grouped[col], marker='o', color=race_colors[col], label=col)
     
-    ax.set_title(f'{coluna}: Proporção de óbitos ao longo dos anos: {categoria}')
+    ax.set_title(f'{column}: Proporção de óbitos ao longo dos anos: {category}')
     ax.set_xlabel('Ano de Óbito')
-    ax.set_ylabel('Proporção de Óbitos por Raça')
-    ax.legend(title='Raça', bbox_to_anchor=(1, 1))
+    ax.set_ylabel(f'Proporção de Óbitos por {column}')
+    ax.legend(title=f'{column}', bbox_to_anchor=(1, 1))
 
 
 
