@@ -21,7 +21,7 @@ map_escolaridade = {'1':'nenhuma', '2':'1 a 3 anos', '3':'4 a 7 anos', '4':'8 a 
 df['sexo'] = df['sexo'].map(map_sexo)
 df['raca_cor'] = df['raca_cor'].map(map_raca_cor)
 df['estado_civil'] = df['estado_civil'].map(map_estado_civ)
-df['escolaridade'] = df['escolaridade'].map(map_estado_civ)
+df['escolaridade'] = df['escolaridade'].map(map_escolaridade)
 
 
 df_sufoc = df[df['causa_morte'].between('X700', 'X709')]
