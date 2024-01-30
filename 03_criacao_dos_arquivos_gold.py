@@ -23,6 +23,9 @@ df['raca_cor'] = df['raca_cor'].map(map_raca_cor)
 df['estado_civil'] = df['estado_civil'].map(map_estado_civ)
 df['escolaridade'] = df['escolaridade'].map(map_escolaridade)
 
+df = df.dropna()
+df['idade_momento_obito'] = df['idade_momento_obito'].astype(int)
+
 
 df_sufoc = df[df['causa_morte'].between('X700', 'X709')]
 
