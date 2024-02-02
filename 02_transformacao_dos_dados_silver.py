@@ -12,13 +12,13 @@ PATH = './data/bronze/dados_mortalidade/'
 df_base = None
 for i in os.listdir(PATH):
     if 'Mortalidade' in i:
-       df_temporario = spark.read.option('header', True).options(sep=';').csv(PATH+i)
-       df_temporario = df_temporario.select('DTOBITO','CAUSABAS', 'SEXO', 'DTNASC', 'ESC', 'RACACOR', 'ESTCIV')
+       df_temp = spark.read.option('header', True).options(sep=';').csv(PATH+i)
+       df_temp = df_temp.select('DTOBITO','CAUSABAS', 'SEXO', 'DTNASC', 'ESC', 'RACACOR', 'ESTCIV')
        
        if df_base is None:
-           df_base = df_temporario
+           df_base = df_temp
        else:
-           df_base = df_base.union(df_temporario)
+           df_base = df_base.union(df_temp)
 
 df = df_base.filter((f.col("CAUSABAS") >= "X700") & (f.col("CAUSABAS") <= "X849"))\
         .filter("ESC IS NOT NULL")\
@@ -42,9 +42,9 @@ df = df.coalesce(1)
 
 df.write.format('csv').option('header',True).mode('overwrite').save(URL_SAVE)
 
-arquivos = os.listdir(URL_SAVE)
+files = os.listdir(URL_SAVE)
 
-for i in arquivos:
+for i in files:
     if '.csv' in i[-4:]:
         os.rename(f'{URL_SAVE}/{i}', f'{URL_SAVE}/obitos_por_suicidio.csv')
 

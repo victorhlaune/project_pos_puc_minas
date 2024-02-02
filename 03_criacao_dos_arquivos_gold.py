@@ -26,7 +26,6 @@ df['escolaridade'] = df['escolaridade'].map(map_escolaridade)
 df = df.dropna()
 df['idade_momento_obito'] = df['idade_momento_obito'].astype(int)
 
-
 df_sufoc = df[df['causa_morte'].between('X700', 'X709')]
 
 URL_OUTPUT = './data/gold/'
