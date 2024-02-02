@@ -1,0 +1,3 @@
+# Projeto de Pós Graduação de Engenharia de Dados - PUC MINAS
+O presente projeto visa utilizar técnicas de Engenharia de Dados para construção de pipeline que utiliza de dados públicos do OpenDataSUS para construção de arquivo sobre Mortalidade no Brasil de 2000 a 2019, que tem como base do estudo o suicídio por X70 (práticas de sufocação, estrangulamento e enforcamento). Pós extração e criação de arquivos, foi realizada uma visualizações em arquivo jupyter visando facilitar o entendimento do dado.
+O objetivo do trabalho é compreender o perfil do suicida, algo que pode ajudar na identificação de fatores de risco, e assim, contribuir para a implementação de estratégias de prevenção e intervenção mais eficazes.
