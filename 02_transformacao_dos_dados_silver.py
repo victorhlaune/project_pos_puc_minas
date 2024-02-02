@@ -1,15 +1,19 @@
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as f 
-from pyspark.sql.types import StringType
 import os
 
+# Criando o spark session
 spark = SparkSession.builder.appName('silver_creator_dados_mortalidade')\
          .config("spark.driver.memory", "16g")\
          .master('local').getOrCreate()
 
+# Passando o path que estao os arquivos
 PATH = './data/bronze/dados_mortalidade/'
 
+# Criando uma variavel None que recebera os dataframes
 df_base = None
+
+# Loop que verifica os arquivos em path, carrega, seleciona as colunas e realiza a insercao no df_base
 for i in os.listdir(PATH):
     if 'Mortalidade' in i:
        df_temp = spark.read.option('header', True).options(sep=';').csv(PATH+i)
@@ -20,6 +24,7 @@ for i in os.listdir(PATH):
        else:
            df_base = df_base.union(df_temp)
 
+# Filtragem de nulos, correcao do timestamp e renomeacao de colunas
 df = df_base.filter((f.col("CAUSABAS") >= "X700") & (f.col("CAUSABAS") <= "X849"))\
         .filter("ESC IS NOT NULL")\
         .filter("DTNASC IS NOT NULL")\
@@ -35,17 +40,20 @@ df = df_base.filter((f.col("CAUSABAS") >= "X700") & (f.col("CAUSABAS") <= "X849"
         .withColumn('data_obito', f.to_date('data_obito', "ddMMyyyy"))\
         .withColumn('data_nasc', f.to_date('data_nasc', "ddMMyyyy"))
         
+# Definicao do path_save
+PATH_SAVE = "./data/silver/dados_mortalidade/"
 
-URL_SAVE = "./data/silver/dados_mortalidade/"
-
+# .coalesce(1) para gerar apenas 1 arquivo csv
 df = df.coalesce(1)
 
-df.write.format('csv').option('header',True).mode('overwrite').save(URL_SAVE)
+# Salvando o arquivo csv no PATH_SAVE
+df.write.format('csv').option('header',True).mode('overwrite').save(PATH_SAVE)
 
-files = os.listdir(URL_SAVE)
+# Renomeacao do arquivo para obitos_por_suicidio.csv
+files = os.listdir(PATH_SAVE)
 
 for i in files:
     if '.csv' in i[-4:]:
-        os.rename(f'{URL_SAVE}/{i}', f'{URL_SAVE}/obitos_por_suicidio.csv')
+        os.rename(f'{PATH_SAVE}/{i}', f'{PATH_SAVE}/obitos_por_suicidio.csv')
 
 spark.stop()

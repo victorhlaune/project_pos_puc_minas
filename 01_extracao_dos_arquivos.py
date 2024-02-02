@@ -1,6 +1,7 @@
 import requests
 import os
 
+# Funcao para realizar o download, verificacao de arquivos em pastas e salvamento de arquivos
 def downloading_files(years_for_download, URL, output_directory):    
     os.makedirs(output_directory, exist_ok=True)
 
@@ -25,10 +26,8 @@ def downloading_files(years_for_download, URL, output_directory):
 years_list = list(range(2000, 2020))
 print("Anos que utilizaremos para extração:" + str(years_list) + "\n")
 
-# Downloading and extracting files
+# Definicao de path e diretorio de output
 URL = "https://diaad.s3.sa-east-1.amazonaws.com/sim/Mortalidade_Geral_"
-
-
 output_directory = './data/bronze/dados_mortalidade/'
 
 # Realizando o download dos arquivos
